@@ -4,7 +4,7 @@ import "./style.scss";
 import Home from './pages/Home';
 
 function App() {
-  return <div><Home /></div>;
+  return <div><Register /></div>;
 }
 
 export default App;
