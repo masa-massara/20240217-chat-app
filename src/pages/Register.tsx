@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import Add from "../images/addAvatar.png";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth, storage } from "../firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const Register = () => {
   const [err, setErr] = useState(false);
@@ -14,6 +15,35 @@ const Register = () => {
 
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
+
+      // Create the file metadata
+      /** @type {any} */
+      const metadata = {
+        contentType: displayName,
+      };
+
+      // Upload file and metadata to the object 'images/mountains.jpg'
+      const storageRef = ref(storage, "images/" + file.name);
+      const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+
+      // Listen for state changes, errors, and completion of the upload.
+      uploadTask.on(
+        "state_changed",
+        () => {
+          // Handle progress
+        },
+        (error) => {
+          // Handle error
+          setErr(true);
+        },
+        () => {
+          // Handle successful upload
+          getDownloadURL(uploadTask.snapshot.ref).then(async(downloadURL) => {
+            console.log("File available at", downloadURL);
+            await updateProfile(res.user,{displayName,photoURL:downloadURL})
+          });
+        }
+      );
     } catch (error) {
       setErr(true);
     }
