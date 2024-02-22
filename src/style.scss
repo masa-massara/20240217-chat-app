@@ -76,7 +76,6 @@
     color: #5d5b8b;
     font-weight: bold;
     font-size: 24px;
-
   }
   .title {
     color: #5d5b8b;
@@ -137,6 +136,12 @@
             width: 30px;
             border-radius: 50%;
             object-fit: cover;
+          }
+
+          span {
+            @include tablet() {
+              display: none;
+            }
           }
 
           button {
