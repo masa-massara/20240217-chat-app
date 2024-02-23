@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Add from "../images/addAvatar.png";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, storage } from "../firebase";
+import { auth, storage, db } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore";
 
 const Register = () => {
   const [err, setErr] = useState(false);
@@ -29,18 +30,25 @@ const Register = () => {
       // Listen for state changes, errors, and completion of the upload.
       uploadTask.on(
         "state_changed",
-        () => {
-          // Handle progress
-        },
+        () => {},
+
         (error) => {
-          // Handle error
           setErr(true);
         },
         () => {
-          // Handle successful upload
-          getDownloadURL(uploadTask.snapshot.ref).then(async(downloadURL) => {
-            console.log("File available at", downloadURL);
-            await updateProfile(res.user,{displayName,photoURL:downloadURL})
+          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+            await updateProfile(res.user, {
+              displayName,
+              photoURL: downloadURL,
+            });
+            await setDoc(doc(db, "users", res.user.uid), {
+              uid: res.user.uid,
+              displayName,
+              email,
+              photoURL: downloadURL,
+            });
+
+            await setDoc(doc(db, "userChats", res.user.uid), {});
           });
         }
       );
