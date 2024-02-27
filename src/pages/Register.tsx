@@ -4,9 +4,12 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, storage, db } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [err, setErr] = useState(false);
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const displayName = e.target[0].value;
@@ -49,6 +52,7 @@ const Register = () => {
             });
 
             await setDoc(doc(db, "userChats", res.user.uid), {});
+            navigate("/");
           });
         }
       );
@@ -75,7 +79,7 @@ const Register = () => {
           {err && <span>エラーが発生しました</span>}
         </form>
         <p>
-          Already have an account? <span className="login">Login</span>
+          Already have an account? <span className="login"><Link to="/login">ログイン</Link></span>
         </p>
       </div>
     </div>
