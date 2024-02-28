@@ -4,11 +4,20 @@ const Search = () => {
   const [username, setUsername] = useState("");
   const [user, setUser] = useState(null);
   const [err, setErr] = useState(false);
+  const handleSearch = () => {};
+
+  const handleKey = (e) => {
+    e.code === "Enter" && handleSearch();
+  };
 
   return (
     <div className="search">
       <div className="searchForm">
-        <input type="text" placeholder="友達を検索" />
+        <input
+          type="text"
+          placeholder="友達を検索"
+          onChange={(e) => setUsername(e.target.value)}
+        />
       </div>
       <div className="userChat">
         <img
