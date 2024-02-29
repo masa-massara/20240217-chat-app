@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { collection, query, where } from "firebase/firestore";
+import {db} from "../firebase"
 
 const Search = () => {
   const [username, setUsername] = useState("");
@@ -17,6 +19,7 @@ const Search = () => {
           type="text"
           placeholder="友達を検索"
           onChange={(e) => setUsername(e.target.value)}
+          onKeyDown={handleKey}
         />
       </div>
       <div className="userChat">
