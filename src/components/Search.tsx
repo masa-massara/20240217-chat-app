@@ -1,22 +1,29 @@
-import React, { useState } from "react";
-import { collection, getDoc, getDocs, query, where } from "firebase/firestore";
+import React, { SetStateAction, useState } from "react";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
+
+interface User {
+  photoURL: string;
+  displayName: string;
+}
 
 const Search = () => {
   const [username, setUsername] = useState("");
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [err, setErr] = useState(false);
   const handleSearch = async () => {
     const q = query(
       collection(db, "users"),
       where("displayName", "==", username)
     );
-      try{
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc))
-      }
-
-    
+    try {
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        setUser(doc.data() as SetStateAction<User | null>);
+      });
+    } catch (err) {
+      setErr(true);
+    }
 
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
@@ -33,20 +40,18 @@ const Search = () => {
       <div className="searchForm">
         <input
           type="text"
-          placeholder="友達を検索"
+          placeholder="ユーザーを検索"
           onChange={(e) => setUsername(e.target.value)}
           onKeyDown={handleKey}
         />
       </div>
-      <div className="userChat">
-        <img
-          src="https://ih1.redbubble.net/image.1259577480.8618/st,small,507x507-pad,600x600,f8f8f8.jpg"
-          alt=""
-        />
-        <div className="userChatInfo">
-          <span>ジュン</span>
+      {err && <span>ユーザーが見つかりませんでした</span>}
+      {user && (
+        <div className="userChat">
+          <img src={user?.photoURL || "デフォルトの画像URL"} alt="" />
+          <div className="userChatInfo">{user?.displayName || "名無し"}</div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
