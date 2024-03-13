@@ -6,6 +6,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import { Link, useNavigate } from "react-router-dom";
 
+
 const Register = () => {
   const [err, setErr] = useState(false);
   const navigate = useNavigate();
@@ -29,6 +30,8 @@ const Register = () => {
       // Upload file and metadata to the object 'images/mountains.jpg'
       const storageRef = ref(storage, "images/" + file.name);
       const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+      console.log(storageRef);
+      
 
       // Listen for state changes, errors, and completion of the upload.
       uploadTask.on(
