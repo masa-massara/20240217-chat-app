@@ -35,6 +35,8 @@ const Search = () => {
     e.code === "Enter" && handleSearch();
   };
 
+  const handleSelect = () => {};
+
   return (
     <div className="search">
       <div className="searchForm">
@@ -49,7 +51,9 @@ const Search = () => {
       {user && (
         <div className="userChat">
           <img src={user?.photoURL || "デフォルトの画像URL"} alt="" />
-          <div className="userChatInfo">{user?.displayName || "名無し"}</div>
+          <div className="userChatInfo" onClick={handleSelect}>
+            {user?.displayName || "名無し"}
+          </div>
         </div>
       )}
     </div>
